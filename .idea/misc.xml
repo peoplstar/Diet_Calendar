@@ -3,7 +3,9 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Users/asxz3/AndroidStudioProjects/DietCalender/app/src/main/res/layout/activity_main.xml" value="0.4244791666666667" />
+        <entry key="..\:/Users/asxz3/AndroidStudioProjects/DietCalender/app/src/main/res/layout/activity_main.xml" value="0.25" />
+        <entry key="..\:/Users/asxz3/AndroidStudioProjects/DietCalender/app/src/main/res/layout/fragment_calendar_view.xml" value="0.2682291666666667" />
+        <entry key="..\:/Users/asxz3/AndroidStudioProjects/DietCalender/app/src/main/res/layout/fragment_main_view.xml" value="0.2682291666666667" />
       </map>
     </option>
   </component>
