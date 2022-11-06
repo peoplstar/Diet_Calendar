@@ -6,12 +6,11 @@
 
     <TextView
         android:id="@+id/tv_month"
-        android:background="#867E7777"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:gravity="center"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         android:textSize="12sp" />
 
     <TextView
@@ -19,7 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         android:textSize="12sp" />
 
     <TextView
@@ -28,7 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:gravity="center"
-        android:textColor="@color/black"
-        android:textSize="12sp" />
+        android:textColor="@color/white"
+        android:textSize="18sp" />
 
 </LinearLayout>

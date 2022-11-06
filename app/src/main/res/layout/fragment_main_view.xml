@@ -7,15 +7,11 @@
     android:layout_height="match_parent"
     tools:context=".mainView">
 
-
-
-
     <!-- TODO: Update blank fragment layout -->
     <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/breakfastCardView"
         android:layout_width="320dp"
         android:layout_height="150dp"
-        android:layout_marginTop="50dp"
         card_view:cardCornerRadius="8dp"
         card_view:cardElevation="8dp"
         card_view:layout_constraintBottom_toTopOf="@id/lunchCardView"

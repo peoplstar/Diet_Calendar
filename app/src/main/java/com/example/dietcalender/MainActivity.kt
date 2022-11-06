@@ -1,19 +1,20 @@
 package com.example.dietcalender
 
+import android.graphics.Color
+import android.graphics.Color.parseColor
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.LinearLayout
 import android.widget.TextView
 import com.example.dietcalender.databinding.ActivityMainBinding
-import com.google.type.DateTime
 import com.kizitonwose.calendarview.model.CalendarDay
 import com.kizitonwose.calendarview.ui.DayBinder
 import com.kizitonwose.calendarview.ui.ViewContainer
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
+import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.util.*
 
@@ -77,11 +78,22 @@ class MainActivity : AppCompatActivity() {
 
         // 날짜에 따라 textview에 값을 bind해줌
         fun bind(day: CalendarDay) {
-            Log.d("태그", "bind ")
             this.day = day
             monthText.text = day.date.monthValue.toString() + '월'
             dateText.text = day.date.dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.getDefault())
             dayText.text = day.date.dayOfMonth.toString()
+
+            var now = LocalDate.now()
+            var today = now.format(DateTimeFormatter.ofPattern("dd"))
+            Log.d("Tag", "bind:${day.date} == ${now.toString()}")
+            Log.d("Tag", "${dayText.text}")
+
+            if (now == day.date) {
+                Log.d("Tag", "${dayText.toString()}")
+                dayText.setTextColor(Color.parseColor("#f3b369"))
+            }
+
+
         }
     }
 
