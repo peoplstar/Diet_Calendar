@@ -6,11 +6,13 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.CalendarView
 import android.widget.TextView
 import com.example.dietcalender.databinding.ActivityMainBinding
 import com.kizitonwose.calendarview.model.CalendarDay
 import com.kizitonwose.calendarview.ui.DayBinder
 import com.kizitonwose.calendarview.ui.ViewContainer
+import org.w3c.dom.Text
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
@@ -23,7 +25,8 @@ class MainActivity : AppCompatActivity() {
     private val binding : ActivityMainBinding by lazy{
         ActivityMainBinding.inflate(layoutInflater)
     }
-
+    var before: TextView? = null
+    //
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
@@ -62,6 +65,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     inner class DayViewContainer(view: View) : ViewContainer(view) {
+
+        lateinit var after: TextView
         val monthText: TextView = view.findViewById(R.id.tv_month)
         val dateText: TextView = view.findViewById(R.id.tv_date)
         val dayText: TextView = view.findViewById(R.id.tv_day)
@@ -69,10 +74,12 @@ class MainActivity : AppCompatActivity() {
         lateinit var day: CalendarDay
 
         init {
-            Log.d("태그", ":inited ")
             view.setOnClickListener {
-                val str = day.date.dayOfMonth.toString()
-                Log.d("태그", "clicked $str" )
+                before?.setTextColor(Color.parseColor("#ffffff"))
+                it.findViewById<TextView>(R.id.tv_day).apply {
+                    this.setTextColor(Color.parseColor("#f3b369"))
+                    before = this
+                }
             }
         }
 
@@ -82,17 +89,12 @@ class MainActivity : AppCompatActivity() {
             monthText.text = day.date.monthValue.toString() + '월'
             dateText.text = day.date.dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.getDefault())
             dayText.text = day.date.dayOfMonth.toString()
-
+            //before = dayText
             var now = LocalDate.now()
             var today = now.format(DateTimeFormatter.ofPattern("dd"))
-            Log.d("Tag", "bind:${day.date} == ${now.toString()}")
-            Log.d("Tag", "${dayText.text}")
 
-            if (now == day.date) {
-                Log.d("Tag", "${dayText.toString()}")
-                dayText.setTextColor(Color.parseColor("#f3b369"))
-            }
-
+            if (now == day.date)
+                dayText.setTextColor(Color.parseColor("#f3b369")) // 시작 시 색 변경
 
         }
     }
