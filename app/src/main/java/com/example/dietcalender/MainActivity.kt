@@ -93,9 +93,10 @@ class MainActivity : AppCompatActivity() {
             var now = LocalDate.now()
             var today = now.format(DateTimeFormatter.ofPattern("dd"))
 
-            if (now == day.date)
+            if (now == day.date) {
                 dayText.setTextColor(Color.parseColor("#f3b369")) // 시작 시 색 변경
-
+                before = dayText
+            }
         }
     }
 
