@@ -1,5 +1,6 @@
 package com.example.dietcalender
 
+import android.Manifest
 import android.graphics.Color
 import android.graphics.Color.parseColor
 import androidx.appcompat.app.AppCompatActivity
@@ -8,6 +9,7 @@ import android.util.Log
 import android.view.View
 import android.widget.CalendarView
 import android.widget.TextView
+import androidx.core.app.ActivityCompat
 import com.example.dietcalender.databinding.ActivityMainBinding
 import com.kizitonwose.calendarview.model.CalendarDay
 import com.kizitonwose.calendarview.ui.DayBinder
@@ -30,6 +32,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
+        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), 1)
 
         val transaction = supportFragmentManager.beginTransaction()
         .add(R.id.frameLayout, mainView())
