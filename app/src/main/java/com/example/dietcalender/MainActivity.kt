@@ -2,19 +2,16 @@ package com.example.dietcalender
 
 import android.Manifest
 import android.graphics.Color
-import android.graphics.Color.parseColor
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.CalendarView
 import android.widget.TextView
 import androidx.core.app.ActivityCompat
 import com.example.dietcalender.databinding.ActivityMainBinding
 import com.kizitonwose.calendarview.model.CalendarDay
 import com.kizitonwose.calendarview.ui.DayBinder
 import com.kizitonwose.calendarview.ui.ViewContainer
-import org.w3c.dom.Text
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
@@ -27,21 +24,20 @@ class MainActivity : AppCompatActivity() {
     private val binding : ActivityMainBinding by lazy{
         ActivityMainBinding.inflate(layoutInflater)
     }
+    private val TAG = "TAG"
     var before: TextView? = null
-    //
+    private var i = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
         ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), 1)
 
-        val transaction = supportFragmentManager.beginTransaction()
-        .add(R.id.frameLayout, mainView())
-        transaction.commit()
-
         binding.mainBtn.setOnClickListener {
             replaceFragment()
         }
+
 
         val currentMonth = YearMonth.now()
         val firstMonth = currentMonth.minusMonths(10)
@@ -64,16 +60,18 @@ class MainActivity : AppCompatActivity() {
             override fun bind(container: DayViewContainer, day: CalendarDay) {
                 container.day = day
                 container.bind(day)
+
             }
         }
     }
 
     inner class DayViewContainer(view: View) : ViewContainer(view) {
-
+        var now: LocalDate = LocalDate.now()
+        var year: String = now.format(DateTimeFormatter.ofPattern("yyyy"))
         lateinit var after: TextView
-        val monthText: TextView = view.findViewById(R.id.tv_month)
-        val dateText: TextView = view.findViewById(R.id.tv_date)
-        val dayText: TextView = view.findViewById(R.id.tv_day)
+        private val monthText = view.findViewById<TextView>(R.id.tv_month)
+        private val dateText = view.findViewById<TextView>(R.id.tv_date)
+        private val dayText = view.findViewById<TextView>(R.id.tv_day)
 
         lateinit var day: CalendarDay
 
@@ -84,6 +82,12 @@ class MainActivity : AppCompatActivity() {
                     this.setTextColor(Color.parseColor("#f3b369"))
                     before = this
                 }
+                val click_day = "$year-${monthText.text.dropLast(1)}-${dayText.text}"
+                Log.d(TAG, ": $click_day")
+
+                val transaction = supportFragmentManager.beginTransaction()
+                    .replace(R.id.frameLayout, mainView())
+                transaction.commit()
             }
         }
 
@@ -94,8 +98,6 @@ class MainActivity : AppCompatActivity() {
             dateText.text = day.date.dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.getDefault())
             dayText.text = day.date.dayOfMonth.toString()
             //before = dayText
-            var now = LocalDate.now()
-            var today = now.format(DateTimeFormatter.ofPattern("dd"))
 
             if (now == day.date) {
                 dayText.setTextColor(Color.parseColor("#f3b369")) // 시작 시 색 변경
@@ -115,6 +117,7 @@ class MainActivity : AppCompatActivity() {
         ...
         transaction.commit()
      */
+
     private fun replaceFragment() {
         val transaction = supportFragmentManager.beginTransaction()
             .replace(R.id.frameLayout, mainView())
