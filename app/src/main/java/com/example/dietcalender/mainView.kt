@@ -13,9 +13,9 @@ import android.view.ViewGroup
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.dietcalender.databinding.FragmentMainViewBinding
 import com.google.firebase.storage.FirebaseStorage
+import kotlin.math.log
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -31,7 +31,7 @@ class mainView : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
-
+    lateinit var fileName: String
     lateinit var storage: FirebaseStorage
     lateinit var bitmap :Bitmap
     lateinit var binding :FragmentMainViewBinding
@@ -42,33 +42,18 @@ class mainView : Fragment() {
     ): View? {
 
         binding = FragmentMainViewBinding.inflate(inflater, container,false)
-
-        val storage: FirebaseStorage =
-            FirebaseStorage.getInstance("gs://dietcalendar-9e182.appspot.com")
-        val storageReference = storage.reference
-        val pathReference = storageReference.child("images/2.jpg")
-        Log.d(TAG, "onCreateView: $pathReference")
-
-        pathReference.downloadUrl.addOnSuccessListener { uri ->
-            Log.d(TAG, "onCreate: Success")
-            Log.d(TAG, "onCreateView: $uri")
-            Glide.with(binding.breakfast.context)
-                .load(uri)
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .centerCrop()
-                .into(binding.breakfast)
-        }.addOnFailureListener {
-            Log.d(TAG, "onCreateView: Failes")
-        }
-//        BindingAdapter.loadImage(binding.breakfast, "2.jpg")
-
-        // picture
         val intent: Intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-
+        val bundle = arguments
+        fileName = bundle?.getString("name")!!
         binding.breakfast.setOnClickListener {
             activityResult.launch(intent)
         }
-        return binding.root
+        BindingAdapter.loadImage(binding.breakfast, "${fileName}-breakfast.png")
+        BindingAdapter.loadImage(binding.lunch, "${fileName}-lunch.png")
+        BindingAdapter.loadImage(binding.dinner, "${fileName}-dinner.png")
+        // picture
+
+        return binding.root // Fragment View Show
     }
 
     private val activityResult: ActivityResultLauncher<Intent> = registerForActivityResult(

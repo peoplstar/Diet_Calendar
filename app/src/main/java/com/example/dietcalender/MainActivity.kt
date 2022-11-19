@@ -21,18 +21,22 @@ import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
-    private val binding : ActivityMainBinding by lazy{
+    private val binding: ActivityMainBinding by lazy {
         ActivityMainBinding.inflate(layoutInflater)
     }
     private val TAG = "TAG"
+    private val bundle = Bundle()
     var before: TextView? = null
-    private var i = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), 1)
+        ActivityCompat.requestPermissions(
+            this,
+            arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+            1
+        )
 
         binding.mainBtn.setOnClickListener {
             replaceFragment()
@@ -68,7 +72,6 @@ class MainActivity : AppCompatActivity() {
     inner class DayViewContainer(view: View) : ViewContainer(view) {
         var now: LocalDate = LocalDate.now()
         var year: String = now.format(DateTimeFormatter.ofPattern("yyyy"))
-        lateinit var after: TextView
         private val monthText = view.findViewById<TextView>(R.id.tv_month)
         private val dateText = view.findViewById<TextView>(R.id.tv_date)
         private val dayText = view.findViewById<TextView>(R.id.tv_day)
@@ -84,9 +87,11 @@ class MainActivity : AppCompatActivity() {
                 }
                 val click_day = "$year-${monthText.text.dropLast(1)}-${dayText.text}"
                 Log.d(TAG, ": $click_day")
-
+                bundle.putString("name", click_day)
                 val transaction = supportFragmentManager.beginTransaction()
-                    .replace(R.id.frameLayout, mainView())
+                    .replace(R.id.frameLayout, mainView().apply {
+                        arguments = bundle
+                    })
                 transaction.commit()
             }
         }
