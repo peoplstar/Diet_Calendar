@@ -11,10 +11,6 @@ object BindingAdapter {
 //    @BindingAdapter("app:imageUrl")
     fun loadImage(imageView: ImageView, url: String) {
 
-        val defaultMorning = "gs://dietcalendar-9e182.appspot.com/images/morning.jpg"
-        val defaultAfternoon = "gs://dietcalendar-9e182.appspot.com/images/afternoon.jpg"
-        val defaultEvening = "gs://dietcalendar-9e182.appspot.com/images/evening.jpg"
-
         val storage: FirebaseStorage =
             FirebaseStorage.getInstance("gs://dietcalendar-9e182.appspot.com")
 

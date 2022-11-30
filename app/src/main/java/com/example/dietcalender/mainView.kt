@@ -1,7 +1,10 @@
 package com.example.dietcalender
 
+import android.app.Activity
 import android.app.Activity.RESULT_OK
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.provider.MediaStore
@@ -12,6 +15,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.example.dietcalender.databinding.FragmentMainViewBinding
 import com.google.firebase.storage.FirebaseStorage
@@ -36,6 +41,40 @@ class mainView : Fragment() {
     lateinit var bitmap :Bitmap
     lateinit var binding :FragmentMainViewBinding
 
+    private fun checkPermission() {
+
+        // 1. 위험권한(Camera) 권한 승인상태 가져오기
+        val cameraPermission = ContextCompat.checkSelfPermission(requireContext(), android.Manifest.permission.CAMERA)
+        if (cameraPermission == PackageManager.PERMISSION_GRANTED) {
+            // 카메라 권한이 승인된 상태일 경우
+
+        } else {
+            // 카메라 권한이 승인되지 않았을 경우
+            requestPermission()
+        }
+    }
+
+    // 2. 권한 요청
+    private fun requestPermission() {
+        ActivityCompat.requestPermissions(context as Activity, arrayOf(android.Manifest.permission.CAMERA), 99)
+    }
+
+    // 권한 처리
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray) {
+        when (requestCode) {
+            99 -> {
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                } else {
+                    Log.d("MainActivity", "종료")
+                }
+            }
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -45,9 +84,13 @@ class mainView : Fragment() {
         val intent: Intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         val bundle = arguments
         fileName = bundle?.getString("name")!!
+
+
         binding.breakfast.setOnClickListener {
+            checkPermission()
             activityResult.launch(intent)
         }
+
         BindingAdapter.loadImage(binding.breakfast, "${fileName}-breakfast.png")
         BindingAdapter.loadImage(binding.lunch, "${fileName}-lunch.png")
         BindingAdapter.loadImage(binding.dinner, "${fileName}-dinner.png")
@@ -63,7 +106,7 @@ class mainView : Fragment() {
             val extras = it.data!!.extras
 
             bitmap = extras?.get("data") as Bitmap
-            binding.breakfast.setImageResource(R.drawable.ic_launcher_foreground)
+            binding.breakfast.setImageBitmap(bitmap)
         }
     }
 
