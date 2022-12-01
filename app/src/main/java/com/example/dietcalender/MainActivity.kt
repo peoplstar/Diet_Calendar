@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.dietcalender.databinding.ActivityMainBinding
@@ -101,6 +102,7 @@ class MainActivity : AppCompatActivity() {
         binding.calendarView.setup(firstMonth, lastMonth, daysOfWeek.first())
         binding.calendarView.scrollToDate(LocalDate.now())
 
+
         binding.calendarView.dayBinder = object : DayBinder<DayViewContainer> {
             override fun create(view: View) = DayViewContainer(view)
             override fun bind(container: DayViewContainer, day: CalendarDay) {
@@ -127,7 +129,6 @@ class MainActivity : AppCompatActivity() {
                     before = this
                 }
                 val click_day = "$year-${monthText.text.dropLast(1)}-${dayText.text}"
-                Log.d(TAG, ": $click_day")
                 bundle.putString("name", click_day)
                 val transaction = supportFragmentManager.beginTransaction()
                     .replace(R.id.frameLayout, mainView().apply {

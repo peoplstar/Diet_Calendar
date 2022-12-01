@@ -2,13 +2,14 @@ package com.example.dietcalender
 
 import android.app.Activity
 import android.app.Activity.RESULT_OK
-import android.content.Context
+import android.content.ContentValues
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -17,10 +18,8 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.bumptech.glide.Glide
 import com.example.dietcalender.databinding.FragmentMainViewBinding
-import com.google.firebase.storage.FirebaseStorage
-import kotlin.math.log
+import java.io.FileOutputStream
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -36,10 +35,11 @@ class mainView : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
-    lateinit var fileName: String
-    lateinit var storage: FirebaseStorage
-    lateinit var bitmap :Bitmap
-    lateinit var binding :FragmentMainViewBinding
+    private lateinit var day: String
+    private lateinit var fileName: String
+    private val png = ".png"
+    private lateinit var binding :FragmentMainViewBinding
+    private val intent: Intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
 
     private fun checkPermission() {
 
@@ -59,54 +59,94 @@ class mainView : Fragment() {
         ActivityCompat.requestPermissions(context as Activity, arrayOf(android.Manifest.permission.CAMERA), 99)
     }
 
-    // 권한 처리
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray) {
-        when (requestCode) {
-            99 -> {
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                } else {
-                    Log.d("MainActivity", "종료")
-                }
-            }
-        }
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
 
         binding = FragmentMainViewBinding.inflate(inflater, container,false)
-        val intent: Intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+
         val bundle = arguments
-        fileName = bundle?.getString("name")!!
+        day = bundle?.getString("name")!!
 
 
         binding.breakfast.setOnClickListener {
             checkPermission()
+            fileName = "$day-breakfast$png"
+            activityResult.launch(intent)
+        }
+        binding.lunch.setOnClickListener {
+            checkPermission()
+            fileName = "$day-lunch$png"
+            activityResult.launch(intent)
+        }
+        binding.dinner.setOnClickListener {
+            checkPermission()
+            fileName += "$day-dinner$png"
             activityResult.launch(intent)
         }
 
-        BindingAdapter.loadImage(binding.breakfast, "${fileName}-breakfast.png")
-        BindingAdapter.loadImage(binding.lunch, "${fileName}-lunch.png")
-        BindingAdapter.loadImage(binding.dinner, "${fileName}-dinner.png")
+        BindingAdapter.loadImage(binding.breakfast, "${day}-breakfast.png")
+        BindingAdapter.loadImage(binding.lunch, "${day}-lunch.png")
+        BindingAdapter.loadImage(binding.dinner, "${day}-dinner.png")
         // picture
 
         return binding.root // Fragment View Show
     }
 
+    fun saveFile(fileName:String, mimeType:String, bitmap: Bitmap): Uri?{
+
+        var CV = ContentValues()
+
+        // MediaStore 에 파일명, mimeType 을 지정
+        CV.put(MediaStore.Images.Media.DISPLAY_NAME, fileName)
+        CV.put(MediaStore.Images.Media.MIME_TYPE, mimeType)
+
+        // 안정성 검사
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
+            CV.put(MediaStore.Images.Media.IS_PENDING, 1)
+        }
+
+        // MediaStore 에 파일을 저장
+        val uri = context?.contentResolver?.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, CV)
+        if(uri != null){
+            var scriptor = context?.contentResolver?.openFileDescriptor(uri, "w")
+
+            val fos = FileOutputStream(scriptor?.fileDescriptor)
+
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos)
+            fos.close()
+
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
+                CV.clear()
+                // IS_PENDING 을 초기화
+                CV.put(MediaStore.Images.Media.IS_PENDING, 0)
+                context?.contentResolver?.update(uri, CV, null, null)
+            }
+        }
+        return uri
+    }
+
     private val activityResult: ActivityResultLauncher<Intent> = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()){
 
-        if (it.resultCode == RESULT_OK && it.data!! == null) {
+        if (it.resultCode == RESULT_OK) {
             val extras = it.data!!.extras
+            val img = extras?.get("data") as Bitmap
+            val uri = saveFile(fileName, "image/png", img)
 
-            bitmap = extras?.get("data") as Bitmap
-            binding.breakfast.setImageBitmap(bitmap)
+            when (fileName[11]) {
+                'b' -> {
+                    binding.breakfast.setImageURI(uri)
+                }
+                'l' -> {
+                    binding.lunch.setImageURI(uri)
+                }
+                'd' -> {
+                    binding.dinner.setImageURI(uri)
+                }
+            }
+            BindingAdapter.uploadImageTOFirebase(uri!!, fileName)
         }
     }
 
