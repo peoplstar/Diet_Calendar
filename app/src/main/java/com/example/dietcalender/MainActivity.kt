@@ -2,32 +2,18 @@ package com.example.dietcalender
 
 import android.Manifest
 import android.content.pm.PackageManager
-import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.view.View
-import android.widget.TextView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentTransaction
 import com.example.dietcalender.databinding.ActivityMainBinding
-import com.kizitonwose.calendarview.model.CalendarDay
-import com.kizitonwose.calendarview.ui.DayBinder
-import com.kizitonwose.calendarview.ui.ViewContainer
-import java.time.DayOfWeek
-import java.time.LocalDate
-import java.time.YearMonth
-import java.time.format.DateTimeFormatter
-import java.time.format.TextStyle
-import java.util.*
+
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var alarmTransaction : FragmentTransaction
     private lateinit var mainTransaction : FragmentTransaction
-
-    private val bundle = Bundle()
 
     private val binding: ActivityMainBinding by lazy {
         ActivityMainBinding.inflate(layoutInflater)

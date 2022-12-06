@@ -1,10 +1,15 @@
 package com.example.dietcalender
 
+import android.app.TimePickerDialog
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import com.example.dietcalender.databinding.FragmentAlarmBinding
+import java.util.*
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -20,6 +25,10 @@ class FragmentAlarm : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+    private var TAG = "Tag"
+    private val binding: FragmentAlarmBinding by lazy {
+        FragmentAlarmBinding.inflate(layoutInflater)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,6 +43,18 @@ class FragmentAlarm : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
+
+
+        binding.breakfastTime.setOnClickListener {
+
+        }
+
+        binding.lunchTime.setOnClickListener {
+
+        }
+        binding.dinnerTime.setOnClickListener {
+
+        }
         return inflater.inflate(R.layout.fragment_alarm, container, false)
     }
 

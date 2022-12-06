@@ -5,7 +5,7 @@
     android:id="@+id/alarmLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#f3b369"
+    android:background="#ECD7BF"
     tools:context=".mainView">
 
     <LinearLayout
@@ -31,21 +31,32 @@
         android:id="@+id/breakfastAlarm"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
         android:layout_marginTop="100dp"
-        android:layout_marginRight="20dp"
+        android:background="@drawable/border"
         android:orientation="vertical"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingBottom="10dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/top">
 
         <TextView
+            android:id="@+id/breakfastTime"
+            android:clickable="true"
+            android:focusable="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="00:00"
             android:textColor="#6A493F"
             android:textSize="50dp" />
+
+        <Button
+            android:text="123"
+            android:id="@+id/btn23"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -71,15 +82,18 @@
         android:id="@+id/lunchAlarm"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
         android:layout_marginTop="30dp"
-        android:layout_marginRight="20dp"
+        android:background="@drawable/border"
         android:orientation="vertical"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingBottom="10dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/breakfastAlarm">
 
         <TextView
+            android:id="@+id/lunchTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="00:00"
@@ -110,16 +124,20 @@
         android:id="@+id/dinnerAlarm"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
         android:layout_marginTop="30dp"
-        android:layout_marginRight="20dp"
+        android:background="@drawable/border"
         android:orientation="vertical"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingBottom="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/lunchAlarm">
 
         <TextView
+            android:id="@+id/dinnerTime"
+
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="00:00"

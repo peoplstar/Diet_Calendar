@@ -2,55 +2,65 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mainLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
-    android:id="@+id/mainLayout">
-
+    android:background="#ECD7BF"
+    tools:context=".MainActivity">
 
     <FrameLayout
         android:id="@+id/frameLayout"
         android:layout_width="0dp"
         android:layout_height="0dp"
-
-        app:layout_constraintBottom_toTopOf="@+id/alarmBtn"
+        app:layout_constraintBottom_toTopOf="@+id/btnLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
     </FrameLayout>
 
-    <Button
-        android:id="@+id/mainBtn"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/btnLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20sp"
-        android:layout_marginBottom="10dp"
-        android:backgroundTint="#b9957f"
-        android:text="main"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent" />
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:background="#b9957f"
+        app:layout_constraintTop_toBottomOf="@id/frameLayout">
 
-    <Button
-        android:id="@+id/alarmBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:backgroundTint="#b9957f"
-        android:text="Alarm"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toRightOf="@id/mainBtn"
-        app:layout_constraintRight_toLeftOf="@id/anyBtn" />
+        <Button
+            android:id="@+id/mainBtn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_marginLeft="20sp"
+            android:layout_marginBottom="10dp"
+            android:layout_weight="1"
+            android:backgroundTint="#B6805F"
+            android:text="main" />
 
-    <Button
-        android:id="@+id/anyBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="20sp"
-        android:layout_marginBottom="10dp"
-        android:backgroundTint="#b9957f"
-        android:text="Calory"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        <Button
+            android:id="@+id/alarmBtn"
+            android:layout_width="0dp"
+            android:layout_margin="10dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_weight="1"
+            android:backgroundTint="#B6805F"
+            android:text="Alarm" />
+
+        <Button
+            android:id="@+id/anyBtn"
+            android:layout_width="0dp"
+            android:layout_margin="10dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="20sp"
+            android:layout_marginBottom="10dp"
+            android:layout_weight="1"
+            android:backgroundTint="#B6805F"
+            android:text="Calory" />
+    </LinearLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
