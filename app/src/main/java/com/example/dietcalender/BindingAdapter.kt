@@ -36,7 +36,6 @@ object BindingAdapter {
         val storageReference = storage.reference
         val pathReference = storageReference.child("/images/$url")
 
-
         pathReference.downloadUrl.addOnSuccessListener { uri ->
             Log.d("TAG", "onCreate: Success")
             Glide.with(imageView.context)

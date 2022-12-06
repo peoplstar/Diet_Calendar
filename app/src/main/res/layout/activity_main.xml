@@ -4,34 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    android:id="@+id/mainLayout">
 
-
-    <com.kizitonwose.calendarview.CalendarView
-        android:id="@+id/calendarView"
-        android:layout_width="match_parent"
-        android:layout_height="65dp"
-        android:background="#b9957f"
-        app:cv_dayViewResource="@layout/calendar_view"
-        app:cv_hasBoundaries="false"
-        app:cv_inDateStyle="none"
-        app:cv_maxRowCount="1"
-        app:cv_orientation="horizontal"
-        app:cv_outDateStyle="endOfRow"
-        app:cv_scrollMode="paged"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <FrameLayout
         android:id="@+id/frameLayout"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginLeft="12dp"
-        android:layout_marginTop="55dp"
-        android:layout_marginRight="12dp"
-        android:layout_marginBottom="12dp"
-        app:layout_constraintBottom_toTopOf="@+id/calendarBtn"
+
+        app:layout_constraintBottom_toTopOf="@+id/alarmBtn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -50,12 +32,12 @@
         app:layout_constraintLeft_toLeftOf="parent" />
 
     <Button
-        android:id="@+id/calendarBtn"
+        android:id="@+id/alarmBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
         android:backgroundTint="#b9957f"
-        android:text="calendar"
+        android:text="Alarm"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@id/mainBtn"
         app:layout_constraintRight_toLeftOf="@id/anyBtn" />
@@ -67,7 +49,7 @@
         android:layout_marginRight="20sp"
         android:layout_marginBottom="10dp"
         android:backgroundTint="#b9957f"
-        android:text="any"
+        android:text="Calory"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
 
