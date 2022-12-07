@@ -2,6 +2,7 @@ package com.example.dietcalender
 
 import android.R
 import android.app.TimePickerDialog
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -29,6 +30,7 @@ class FragmentAlarm : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+
     private lateinit var database: FirebaseDatabase
     private lateinit var myRef: DatabaseReference
     private var times: String = ""
@@ -66,6 +68,11 @@ class FragmentAlarm : Fragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+
+        binding.bSwitch.isChecked = App.prefs.bValue!!
+        binding.lSwitch.isChecked = App.prefs.lValue!!
+        binding.dSwitch.isChecked = App.prefs.dValue!!
+
         database =
             Firebase.database("https://dietcalendar-9e182-default-rtdb.asia-southeast1.firebasedatabase.app/")
         database.getReference("").addValueEventListener(object : ValueEventListener {
@@ -91,6 +98,17 @@ class FragmentAlarm : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
 
+        binding.bSwitch.setOnCheckedChangeListener { _, b ->
+            App.prefs.bValue = b
+        }
+
+        binding.lSwitch.setOnCheckedChangeListener { _, b ->
+            App.prefs.lValue = b
+        }
+
+        binding.dSwitch.setOnCheckedChangeListener { _, b ->
+            App.prefs.dValue = b
+        }
         binding.breakfastTime.setOnClickListener {
             timePick(binding.breakfastTime)
             myRef = database.getReference("breakfast")
