@@ -13,6 +13,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -50,9 +51,10 @@ class mainView : Fragment() {
     private var param2: String? = null
     var before: TextView? = null
     private var now: LocalDate = LocalDate.now()
+    private lateinit var today: String
     private lateinit var day: String
+    private lateinit var clickDay: String
     private lateinit var fileName: String
-    private lateinit var nowDay: String
     private val png = ".png"
 
     private val intent: Intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
@@ -125,6 +127,7 @@ class mainView : Fragment() {
             view.setOnClickListener {
                 before?.setTextColor(Color.parseColor("#ffffff"))
                 it.findViewById<TextView>(R.id.tv_day).apply {
+                    today = this.text.toString()
                     this.setTextColor(Color.parseColor("#f3b369"))
                     before = this
                 }
@@ -134,11 +137,11 @@ class mainView : Fragment() {
                     else -> dayText.text as String
                 } // 1 .. 9 날짜 -> 01 .. 09 변환
 
-                val click_day = "$year-${monthText.text.dropLast(1)}-$changeDayText"
+                clickDay = "$year-${monthText.text.dropLast(1)}-$changeDayText"
 
-                BindingAdapter.loadImage(binding.breakfast, "${click_day}-breakfast.png")
-                BindingAdapter.loadImage(binding.lunch, "${click_day}-lunch.png")
-                BindingAdapter.loadImage(binding.dinner, "${click_day}-dinner.png")
+                BindingAdapter.loadImage(binding.breakfast, "${clickDay}-breakfast.png")
+                BindingAdapter.loadImage(binding.lunch, "${clickDay}-lunch.png")
+                BindingAdapter.loadImage(binding.dinner, "${clickDay}-dinner.png")
 
             }
         }
@@ -162,30 +165,29 @@ class mainView : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        nowDay = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
-        BindingAdapter.loadImage(binding.breakfast, "${nowDay}-breakfast.png")
-        BindingAdapter.loadImage(binding.lunch, "${nowDay}-lunch.png")
-        BindingAdapter.loadImage(binding.dinner, "${nowDay}-dinner.png")
 
+        today = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+        clickDay = today
+
+        BindingAdapter.loadImage(binding.breakfast, "${today}-breakfast.png")
+        BindingAdapter.loadImage(binding.lunch, "${today}-lunch.png")
+        BindingAdapter.loadImage(binding.dinner, "${today}-dinner.png")
 
         binding.breakfast.setOnClickListener {
             checkPermission()
-            fileName = "$day-breakfast$png"
+            fileName = "$clickDay-breakfast$png" // 현재 클릭한 날짜 전역 변수로 선언하여 받아올 것
             activityResult.launch(intent)
         }
         binding.lunch.setOnClickListener {
             checkPermission()
-            fileName = "$day-lunch$png"
+            fileName = "$clickDay-lunch$png"
             activityResult.launch(intent)
         }
         binding.dinner.setOnClickListener {
             checkPermission()
-            fileName += "$day-dinner$png"
+            fileName += "$clickDay-dinner$png"
             activityResult.launch(intent)
         }
-
-
-        // picture
 
         return binding.root // Fragment View Show
     }

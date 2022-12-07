@@ -2,11 +2,12 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/alarmLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#ECD7BF"
     tools:context=".mainView">
+
+
 
     <LinearLayout
         android:id="@+id/top"
@@ -52,11 +53,9 @@
             android:textColor="#6A493F"
             android:textSize="50dp" />
 
-        <Button
-            android:text="123"
-            android:id="@+id/btn23"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+
+
+
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -163,6 +162,5 @@
         </LinearLayout>
 
     </LinearLayout>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
