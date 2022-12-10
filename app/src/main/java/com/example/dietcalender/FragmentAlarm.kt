@@ -1,8 +1,8 @@
 package com.example.dietcalender
 
 import android.R
+import android.app.Activity
 import android.app.TimePickerDialog
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -14,7 +14,6 @@ import com.example.dietcalender.databinding.FragmentAlarmBinding
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
-import java.util.*
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -33,18 +32,53 @@ class FragmentAlarm : Fragment() {
 
     private lateinit var database: FirebaseDatabase
     private lateinit var myRef: DatabaseReference
-    private var times: String = ""
 
     private val binding: FragmentAlarmBinding by lazy {
         FragmentAlarmBinding.inflate(layoutInflater)
     }
 
-    private fun timePick(Categroy: TextView) {
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {
+            param1 = it.getString(ARG_PARAM1)
+            param2 = it.getString(ARG_PARAM2)
+        }
+
+//        onTimeSet()
+        timeInit()
+
+        Log.d("TAG", "Btime : ${App.prefs.bTime}")
+        binding.bSwitch.isChecked = App.prefs.bValue!!
+        binding.lSwitch.isChecked = App.prefs.lValue!!
+        binding.dSwitch.isChecked = App.prefs.dValue!!
+
+
+    }
+
+    private fun timeInit() {
+        binding.breakfastTime.text =
+            if (App.prefs.bTime.isNullOrBlank()) "00:00" else App.prefs.bTime!!
+
+
+        binding.lunchTime.text = App.prefs.lTime!!
+
+
+        binding.dinnerTime.text = App.prefs.dTime!!
+
+    }
+
+    private fun timePick(Categroy: TextView){
+        var times = ""
         val timeSetListener = TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
             times = "%02d:%02d".format(hourOfDay, minute)
             Categroy.text = times
-            myRef.setValue("$times")
+
+            when(Categroy.tag.toString()){
+                "b" -> App.prefs.bTime = times
+                "l" -> App.prefs.lTime = times
+                "d" -> App.prefs.dTime = times
+            }
         }
 
         val dialog = TimePickerDialog(
@@ -62,41 +96,33 @@ class FragmentAlarm : Fragment() {
 
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-
-        binding.bSwitch.isChecked = App.prefs.bValue!!
-        binding.lSwitch.isChecked = App.prefs.lValue!!
-        binding.dSwitch.isChecked = App.prefs.dValue!!
-
-        database =
-            Firebase.database("https://dietcalendar-9e182-default-rtdb.asia-southeast1.firebasedatabase.app/")
-        database.getReference("").addValueEventListener(object : ValueEventListener {
-            override fun onCancelled(error: DatabaseError) {
-                //
-            }
-
-            override fun onDataChange(snapshot: DataSnapshot) {
-                for (data in snapshot.children) {
-                    when (data.key) {
-                        "breakfast" -> binding.breakfastTime.text = data.value.toString()
-                        "lunch" -> binding.lunchTime.text = data.value.toString()
-                        "dinner" -> binding.dinnerTime.text = data.value.toString()
-                    }
-                }
-            }
-        })
-    }
+//    Time Firebase Realtime
+//    private fun onTimeSet() {
+//        database =
+//            Firebase.database("https://dietcalendar-9e182-default-rtdb.asia-southeast1.firebasedatabase.app/")
+//        database.getReference("").addValueEventListener(object : ValueEventListener {
+//            override fun onCancelled(error: DatabaseError) {
+//                //
+//            }
+//
+//            override fun onDataChange(snapshot: DataSnapshot) {
+//                for (data in snapshot.children) {
+//                    when (data.key) {
+//                        "breakfast" -> binding.breakfastTime.text = data.value.toString()
+//                        "lunch" -> binding.lunchTime.text = data.value.toString()
+//                        "dinner" -> binding.dinnerTime.text = data.value.toString()
+//                    }
+//                }
+//            }
+//        })
+//    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
+        val ac = requireContext() as MainActivity
 
         binding.bSwitch.setOnCheckedChangeListener { _, b ->
             App.prefs.bValue = b
@@ -109,18 +135,17 @@ class FragmentAlarm : Fragment() {
         binding.dSwitch.setOnCheckedChangeListener { _, b ->
             App.prefs.dValue = b
         }
+
         binding.breakfastTime.setOnClickListener {
             timePick(binding.breakfastTime)
-            myRef = database.getReference("breakfast")
         }
 
         binding.lunchTime.setOnClickListener {
             timePick(binding.lunchTime)
-            myRef = database.getReference("lunch")
+
         }
         binding.dinnerTime.setOnClickListener {
             timePick(binding.dinnerTime)
-            myRef = database.getReference("dinner")
         }
         return binding.root
     }

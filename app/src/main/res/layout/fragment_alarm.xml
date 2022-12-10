@@ -8,7 +8,6 @@
     tools:context=".mainView">
 
 
-
     <LinearLayout
         android:id="@+id/top"
         android:layout_width="match_parent"
@@ -45,16 +44,14 @@
 
         <TextView
             android:id="@+id/breakfastTime"
-            android:clickable="true"
-            android:focusable="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
+            android:tag="b"
             android:text="00:00"
             android:textColor="#6A493F"
             android:textSize="50dp" />
-
-
-
 
 
         <LinearLayout
@@ -96,6 +93,7 @@
             android:id="@+id/lunchTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:tag="l"
             android:text="00:00"
             android:textColor="#6A493F"
             android:textSize="50dp" />
@@ -138,9 +136,9 @@
 
         <TextView
             android:id="@+id/dinnerTime"
-
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:tag="d"
             android:text="00:00"
             android:textColor="#6A493F"
             android:textSize="50dp" />
