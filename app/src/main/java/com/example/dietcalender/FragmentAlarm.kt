@@ -3,6 +3,7 @@ package com.example.dietcalender
 import android.R
 import android.app.Activity
 import android.app.TimePickerDialog
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -30,8 +31,7 @@ class FragmentAlarm : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
 
-    private lateinit var database: FirebaseDatabase
-    private lateinit var myRef: DatabaseReference
+    private lateinit var af: AlarmFunctions
 
     private val binding: FragmentAlarmBinding by lazy {
         FragmentAlarmBinding.inflate(layoutInflater)
@@ -44,15 +44,12 @@ class FragmentAlarm : Fragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+        af = AlarmFunctions(requireContext())
 
-//        onTimeSet()
         timeInit()
-
-        Log.d("TAG", "Btime : ${App.prefs.bTime}")
         binding.bSwitch.isChecked = App.prefs.bValue!!
         binding.lSwitch.isChecked = App.prefs.lValue!!
         binding.dSwitch.isChecked = App.prefs.dValue!!
-
 
     }
 
@@ -60,24 +57,45 @@ class FragmentAlarm : Fragment() {
         binding.breakfastTime.text =
             if (App.prefs.bTime.isNullOrBlank()) "00:00" else App.prefs.bTime!!
 
+        binding.lunchTime.text =
+            if (App.prefs.lTime.isNullOrBlank()) "00:00" else App.prefs.lTime!!
 
-        binding.lunchTime.text = App.prefs.lTime!!
-
-
-        binding.dinnerTime.text = App.prefs.dTime!!
+        binding.dinnerTime.text =
+            if (App.prefs.dTime.isNullOrBlank()) "00:00" else App.prefs.dTime!!
 
     }
 
-    private fun timePick(Categroy: TextView){
+    private fun timePick(Category: TextView){
         var times = ""
         val timeSetListener = TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
             times = "%02d:%02d".format(hourOfDay, minute)
-            Categroy.text = times
+            Category.text = times
 
-            when(Categroy.tag.toString()){
-                "b" -> App.prefs.bTime = times
-                "l" -> App.prefs.lTime = times
-                "d" -> App.prefs.dTime = times
+            when(Category.tag.toString()){
+                "b" -> {
+                    App.prefs.bTime = times
+                    if (binding.bSwitch.isChecked) {
+                        af.cancelAlarm(1)
+                        val time = "2001-01-01 $times:00"
+                        setAlarm(time, 1, "BREAKFAST")
+                    }
+                }
+                "l" -> {
+                    App.prefs.lTime = times
+                    if (binding.lSwitch.isChecked) {
+                        af.cancelAlarm(2)
+                        val time = "2001-01-01 $times:00"
+                        setAlarm(time, 2, "LUNCH")
+                    }
+                }
+                "d" -> {
+                    App.prefs.dTime = times
+                    if (binding.dSwitch.isChecked) {
+                        af.cancelAlarm(3)
+                        val time = "2001-01-01 $times:00"
+                        setAlarm(time, 3, "DINNER")
+                    }
+                }
             }
         }
 
@@ -96,44 +114,47 @@ class FragmentAlarm : Fragment() {
 
     }
 
-//    Time Firebase Realtime
-//    private fun onTimeSet() {
-//        database =
-//            Firebase.database("https://dietcalendar-9e182-default-rtdb.asia-southeast1.firebasedatabase.app/")
-//        database.getReference("").addValueEventListener(object : ValueEventListener {
-//            override fun onCancelled(error: DatabaseError) {
-//                //
-//            }
-//
-//            override fun onDataChange(snapshot: DataSnapshot) {
-//                for (data in snapshot.children) {
-//                    when (data.key) {
-//                        "breakfast" -> binding.breakfastTime.text = data.value.toString()
-//                        "lunch" -> binding.lunchTime.text = data.value.toString()
-//                        "dinner" -> binding.dinnerTime.text = data.value.toString()
-//                    }
-//                }
-//            }
-//        })
-//    }
+    private fun setAlarm(time : String, alarmCode : Int, content : String){
+        af.callAlarm(time, alarmCode, content)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val ac = requireContext() as MainActivity
 
         binding.bSwitch.setOnCheckedChangeListener { _, b ->
             App.prefs.bValue = b
+            val time = "2001-01-01 ${binding.breakfastTime.text}:00"
+            if(b){
+                setAlarm(time, 1, "BREAKFAST")
+            }
+            else {
+                af.cancelAlarm(1)
+            }
         }
 
         binding.lSwitch.setOnCheckedChangeListener { _, b ->
             App.prefs.lValue = b
+            val time = "2001-01-01 ${binding.lunchTime.text}:00"
+            if(b){
+                setAlarm(time, 2, "LUNCH")
+            }
+            else {
+                af.cancelAlarm(2)
+            }
         }
 
         binding.dSwitch.setOnCheckedChangeListener { _, b ->
             App.prefs.dValue = b
+            val time = "2001-01-01 ${binding.dinnerTime.text}:00"
+            if(b){
+                setAlarm(time, 3, "DINNER")
+            }
+            else {
+                af.cancelAlarm(3)
+            }
         }
 
         binding.breakfastTime.setOnClickListener {
