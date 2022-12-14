@@ -2,6 +2,7 @@ package com.example.dietcalender
 
 import android.app.Activity
 import android.app.Activity.RESULT_OK
+import android.app.AlertDialog
 import android.content.ContentValues
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -14,16 +15,22 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.dietcalender.databinding.FragmentMainViewBinding
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 import com.kizitonwose.calendarview.model.CalendarDay
 import com.kizitonwose.calendarview.ui.DayBinder
 import com.kizitonwose.calendarview.ui.ViewContainer
@@ -61,13 +68,10 @@ class mainView : Fragment() {
 
     private fun checkPermission() {
 
-        // 1. 위험권한(Camera) 권한 승인상태 가져오기
         val cameraPermission = ContextCompat.checkSelfPermission(requireContext(), android.Manifest.permission.CAMERA)
         if (cameraPermission == PackageManager.PERMISSION_GRANTED) {
-            // 카메라 권한이 승인된 상태일 경우
 
         } else {
-            // 카메라 권한이 승인되지 않았을 경우
             requestPermission()
         }
     }
@@ -115,6 +119,8 @@ class mainView : Fragment() {
         }
     }
 
+
+
     inner class DayViewContainer(view: View) : ViewContainer(view) {
         var year: String = now.format(DateTimeFormatter.ofPattern("yyyy"))
         private val monthText = view.findViewById<TextView>(R.id.tv_month)
@@ -142,7 +148,7 @@ class mainView : Fragment() {
                 BindingAdapter.loadImage(binding.breakfast, "${clickDay}-breakfast.png")
                 BindingAdapter.loadImage(binding.lunch, "${clickDay}-lunch.png")
                 BindingAdapter.loadImage(binding.dinner, "${clickDay}-dinner.png")
-
+                Thread.sleep(200)
             }
         }
 
@@ -161,10 +167,16 @@ class mainView : Fragment() {
         }
 
     }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
+        binding.apply { registerForContextMenu(this.breakfast) }
+        binding.apply { registerForContextMenu(this.lunch) }
+        binding.apply { registerForContextMenu(this.dinner) }
+
 
         today = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
         clickDay = today
@@ -173,26 +185,64 @@ class mainView : Fragment() {
         BindingAdapter.loadImage(binding.lunch, "${today}-lunch.png")
         BindingAdapter.loadImage(binding.dinner, "${today}-dinner.png")
 
-        binding.breakfast.setOnClickListener {
-            checkPermission()
-            fileName = "$clickDay-breakfast$png" // 현재 클릭한 날짜 전역 변수로 선언하여 받아올 것
-            activityResult.launch(intent)
-        }
-        binding.lunch.setOnClickListener {
-            checkPermission()
-            fileName = "$clickDay-lunch$png"
-            activityResult.launch(intent)
-        }
-        binding.dinner.setOnClickListener {
-            checkPermission()
-            fileName += "$clickDay-dinner$png"
-            activityResult.launch(intent)
-        }
-
         return binding.root // Fragment View Show
     }
 
-    fun saveFile(fileName:String, mimeType:String, bitmap: Bitmap): Uri?{
+    override fun onCreateContextMenu(
+        menu: ContextMenu,
+        v: View,
+        menuInfo: ContextMenu.ContextMenuInfo?
+    ) {
+        super.onCreateContextMenu(menu, v, menuInfo)
+
+        when (v?.id) {
+            R.id.breakfast -> {
+                requireActivity().menuInflater.inflate(R.menu.bmenu, menu)
+            }
+            R.id.lunch -> {
+                requireActivity().menuInflater.inflate(R.menu.lmenu, menu)
+            }
+            R.id.dinner -> {
+                requireActivity().menuInflater.inflate(R.menu.dmenu, menu)
+            }
+        }
+    }
+
+    private fun takePicture(Category: String){
+        checkPermission()
+        fileName = "$clickDay-$Category$png" // 현재 클릭한 날짜 전역 변수로 선언하여 받아올 것
+        Log.d(TAG, "takePicture: $fileName")
+        activityResult.launch(intent)
+    }
+
+    private fun contentText(Category: String){
+        val dialog = CustomDialog(requireContext())
+        dialog.showDia("$clickDay", Category)
+    }
+
+    override fun onContextItemSelected(item: MenuItem): Boolean {
+        when (item?.itemId) {
+            R.id.bTakePicture -> {
+                takePicture("{$clickDay}breakfast")
+            }
+
+            R.id.bContent -> {
+                contentText("breakfast")
+            }
+
+            R.id.lTakePicture -> {
+                takePicture("lunch")
+            }
+
+            R.id.dTakePicture -> {
+                takePicture("dinner")
+            }
+        }
+
+        return super.onContextItemSelected(item)
+    }
+
+    private fun saveFile(fileName:String, mimeType:String, bitmap: Bitmap): Uri?{
 
         var CV = ContentValues()
 
@@ -201,7 +251,7 @@ class mainView : Fragment() {
         CV.put(MediaStore.Images.Media.MIME_TYPE, mimeType)
 
         // 안정성 검사
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             CV.put(MediaStore.Images.Media.IS_PENDING, 1)
         }
 
@@ -225,20 +275,20 @@ class mainView : Fragment() {
         return uri
     }
 
-    fun getOrientationOfImage(filepath : String): Int? {
+    private fun getOrientationOfImage(filepath : String): Int? {
         var exif :ExifInterface? = null
         var result: Int? = null
 
-        try{
+        try {
             exif = ExifInterface(filepath)
-        }catch (e: Exception){
+        } catch (e: Exception){
             e.printStackTrace()
             return -1
         }
 
         val orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, -1)
         if(orientation != -1){
-            result = when(orientation){
+            result = when(orientation) {
                 ExifInterface.ORIENTATION_ROTATE_90 -> 90
                 ExifInterface.ORIENTATION_ROTATE_180 -> 180
                 ExifInterface.ORIENTATION_ROTATE_270 -> 270
@@ -283,13 +333,25 @@ class mainView : Fragment() {
 
             when (fileName[11]) {
                 'b' -> {
-                    binding.breakfast.setImageURI(uri)
+                    Glide.with(this)
+                        .load(uri)
+                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .centerCrop()
+                        .into(binding.breakfast)
                 }
                 'l' -> {
-                    binding.lunch.setImageURI(uri)
+                    Glide.with(this)
+                        .load(uri)
+                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .centerCrop()
+                        .into(binding.lunch)
                 }
                 'd' -> {
-                    binding.dinner.setImageURI(uri)
+                    Glide.with(this)
+                        .load(uri)
+                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .centerCrop()
+                        .into(binding.dinner)
                 }
             }
             BindingAdapter.uploadImageTOFirebase(uri!!, fileName)

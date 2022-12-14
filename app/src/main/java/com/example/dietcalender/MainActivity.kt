@@ -1,22 +1,21 @@
 package com.example.dietcalender
 
 import android.Manifest
-import android.app.AlarmManager
-import android.app.Application
-import android.app.PendingIntent
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.ContextMenu
+import android.view.MenuItem
+import android.view.View
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentTransaction
 import com.example.dietcalender.databinding.ActivityMainBinding
-import java.util.*
 
 class MainActivity : AppCompatActivity() {
-
 
     private lateinit var alarmTransaction : FragmentTransaction
     private lateinit var mainTransaction : FragmentTransaction
@@ -47,7 +46,14 @@ class MainActivity : AppCompatActivity() {
             alarmReplaceFragment()
         }
 
+        binding.anyBtn.setOnClickListener {
+            Intent(Intent.ACTION_VIEW,
+                Uri.parse("https://www.dietshin.com/calorie/calorie_main.asp")).apply {
+                startActivity(this)
+            }
+        }
     }
+
 
     private fun checkPermission() {
 

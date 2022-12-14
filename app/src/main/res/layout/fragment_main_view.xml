@@ -43,6 +43,7 @@
 
             <ImageView
                 android:id="@+id/breakfast"
+                android:tag="b"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:alpha="0.8"
@@ -90,6 +91,7 @@
                 android:scaleType="fitXY" />
 
             <TextView
+                android:tag="l"
                 android:id="@+id/lunchText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -131,6 +133,7 @@
                 android:scaleType="fitXY" />
 
             <TextView
+                android:tag="d"
                 android:id="@+id/dinnerText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

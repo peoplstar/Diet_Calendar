@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/lTakePicture"
+        android:title="촬영"
+        android:icon="@drawable/ic_launcher_background" />
+
+    <item
+        android:id="@+id/lContent"
+        android:title="내용"
+        android:icon="@drawable/ic_launcher_background" />
+
+</menu>
