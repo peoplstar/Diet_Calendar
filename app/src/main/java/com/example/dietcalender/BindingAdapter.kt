@@ -61,6 +61,7 @@ object BindingAdapter {
                         .centerCrop()
                         .into(imageView)
                 }
+
                 'd' -> {
                     Glide.with(imageView.context)
                         .load(R.drawable.evening)

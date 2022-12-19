@@ -76,7 +76,7 @@ class FragmentAlarm : Fragment() {
                     App.prefs.bTime = times
                     if (binding.bSwitch.isChecked) {
                         af.cancelAlarm(1)
-                        val time = "2001-01-01 $times:00"
+                        val time = "$times"
                         setAlarm(time, 1, "BREAKFAST")
                     }
                 }
@@ -84,7 +84,7 @@ class FragmentAlarm : Fragment() {
                     App.prefs.lTime = times
                     if (binding.lSwitch.isChecked) {
                         af.cancelAlarm(2)
-                        val time = "2001-01-01 $times:00"
+                        val time = "$times"
                         setAlarm(time, 2, "LUNCH")
                     }
                 }
@@ -92,7 +92,7 @@ class FragmentAlarm : Fragment() {
                     App.prefs.dTime = times
                     if (binding.dSwitch.isChecked) {
                         af.cancelAlarm(3)
-                        val time = "2001-01-01 $times:00"
+                        val time = "$times"
                         setAlarm(time, 3, "DINNER")
                     }
                 }
@@ -126,7 +126,7 @@ class FragmentAlarm : Fragment() {
 
         binding.bSwitch.setOnCheckedChangeListener { _, b ->
             App.prefs.bValue = b
-            val time = "2001-01-01 ${binding.breakfastTime.text}:00"
+            val time = "${binding.breakfastTime.text}:00"
             if(b){
                 setAlarm(time, 1, "BREAKFAST")
             }
@@ -137,7 +137,7 @@ class FragmentAlarm : Fragment() {
 
         binding.lSwitch.setOnCheckedChangeListener { _, b ->
             App.prefs.lValue = b
-            val time = "2001-01-01 ${binding.lunchTime.text}:00"
+            val time = "${binding.lunchTime.text}:00"
             if(b){
                 setAlarm(time, 2, "LUNCH")
             }
@@ -148,7 +148,7 @@ class FragmentAlarm : Fragment() {
 
         binding.dSwitch.setOnCheckedChangeListener { _, b ->
             App.prefs.dValue = b
-            val time = "2001-01-01 ${binding.dinnerTime.text}:00"
+            val time = "${binding.dinnerTime.text}:00"
             if(b){
                 setAlarm(time, 3, "DINNER")
             }

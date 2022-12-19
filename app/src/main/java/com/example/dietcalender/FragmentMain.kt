@@ -211,7 +211,6 @@ class mainView : Fragment() {
     private fun takePicture(Category: String){
         checkPermission()
         fileName = "$clickDay-$Category$png" // 현재 클릭한 날짜 전역 변수로 선언하여 받아올 것
-        Log.d(TAG, "takePicture: $fileName")
         activityResult.launch(intent)
     }
 
@@ -223,7 +222,7 @@ class mainView : Fragment() {
     override fun onContextItemSelected(item: MenuItem): Boolean {
         when (item?.itemId) {
             R.id.bTakePicture -> {
-                takePicture("{$clickDay}breakfast")
+                takePicture("breakfast")
             }
 
             R.id.bContent -> {
@@ -234,8 +233,16 @@ class mainView : Fragment() {
                 takePicture("lunch")
             }
 
+            R.id.lContent -> {
+                contentText("lunch")
+            }
+
             R.id.dTakePicture -> {
                 takePicture("dinner")
+            }
+
+            R.id.dContent -> {
+                contentText("dinner")
             }
         }
 

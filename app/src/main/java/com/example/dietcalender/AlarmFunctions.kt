@@ -18,7 +18,6 @@ class AlarmFunctions(private val context: Context){
     private val ioScope by lazy { CoroutineScope(Dispatchers.IO) }
 
     fun callAlarm(time : String, alarm_code : Int, content : String){
-
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val receiverIntent = Intent(context, AlarmReceiver::class.java) //리시버로 전달될 인텐트 설정
         receiverIntent.apply {
@@ -31,16 +30,20 @@ class AlarmFunctions(private val context: Context){
             PendingIntent.getBroadcast(context,alarm_code, receiverIntent, PendingIntent.FLAG_UPDATE_CURRENT)
         }
 
-        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-        var datetime = Date()
-        try {
-            datetime = dateFormat.parse(time) as Date
-        } catch (e: ParseException) {
-            e.printStackTrace()
+//        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+//        var datetime = Date()
+//        try {
+//            datetime = dateFormat.parse(time) as Date
+//        } catch (e: ParseException) {
+//            e.printStackTrace()
+//        }
+        val times = time.split(":")
+        val calendar = Calendar.getInstance().apply {
+            timeInMillis = System.currentTimeMillis()
+            set(Calendar.HOUR_OF_DAY, times[0].toInt())
+            set(Calendar.MINUTE, times[1].toInt())
         }
 
-        val calendar = Calendar.getInstance()
-        calendar.time = datetime
 
         //API 23(android 6.0) 이상(해당 api 레벨부터 도즈모드 도입으로 setExact 사용 시 알람이 울리지 않음)
         alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pendingIntent);

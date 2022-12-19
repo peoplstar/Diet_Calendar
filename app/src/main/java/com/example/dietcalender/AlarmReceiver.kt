@@ -43,7 +43,7 @@ class AlarmReceiver() : BroadcastReceiver() {
         val title = intent.extras!!.getString("content")
 
         val pendingIntent = if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.S) {
-            PendingIntent.getActivity(context,requestCode,intent2,PendingIntent.FLAG_IMMUTABLE); //Activity를 시작하는 인텐트 생성
+            PendingIntent.getActivity(context,requestCode,intent2,PendingIntent.FLAG_IMMUTABLE);
         } else {
             PendingIntent.getActivity(context,requestCode,intent2,PendingIntent.FLAG_UPDATE_CURRENT);
         }
